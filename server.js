@@ -1,26 +1,50 @@
-
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config({ path: '.env' });
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config({ path: ".env" });
 }
-const express = require('express');
-const app = express();
+
+
+//All Imports
+const express = require("express");
+const bodyparser = require('body-parser')
 const expresslayout = require("express-ejs-layouts");
-const indexRouter = require('./routes/index')
+const mongoose = require("mongoose");
 
-app.set('view engine', 'ejs')
-app.set('views', __dirname + '/views')
-app.set('layout', 'layouts/layout')
+const app = express();
+
+
+//All Routes
+const indexRouter = require("./routes/index");
+const authorRouter = require("./routes/authors");
+
+app.set("view engine", "ejs");
+app.set("views", __dirname + "/views");
+app.set("layout", "layouts/layout");
+
 app.use(expresslayout);
-app.use(express.static('public'))
+app.use(express.static("public"));
+app.use(bodyparser.urlencoded({ limit: '10mb', extended: false }))
 
-const mongoose = require('mongoose')
-mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true })
-const db = mongoose.connection
-db.on('error', function (err) {
-    console.error("connection error;", err);
-});
-db.once('open', () => {
-    console.log("Connected to Mongoose Database")
-})
-app.use('/', indexRouter)
+
+mongoose
+    .connect(process.env.DATABASE_URL, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true
+    })
+    .then(() => console.log("Database Connected!"))
+    .catch(err => {
+        console.log(err);
+    });
+
+// const db = mongoose.connection;
+
+// db.on('error', function (err) {
+//     console.error("connection error;", err);
+// });
+// db.once('open', () => {
+//     console.log("Connected to Mongoose Database")
+// })
+
+app.use("/", indexRouter);
+app.use("/authors", authorRouter);
+
 app.listen(process.env.PORT || 3000);
