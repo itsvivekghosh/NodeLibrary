@@ -7,6 +7,7 @@ const express = require("express");
 const bodyparser = require("body-parser");
 const expresslayout = require("express-ejs-layouts");
 const mongoose = require("mongoose");
+const methodOverride = require("method-override");
 
 const app = express();
 
@@ -17,6 +18,7 @@ const bookRouter = require("./routes/books");
 
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
+app.use(methodOverride("_method"));
 app.set("layout", "layouts/layout");
 
 app.use(expresslayout);
