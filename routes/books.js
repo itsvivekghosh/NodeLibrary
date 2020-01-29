@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Book = require("../models/books");
 const Author = require("../models/author");
+
 const imageMimeTypes = ["image/jpeg", "image/png", "images/gif"];
 
 // All Books Route
@@ -84,10 +85,13 @@ router.put("/:id", async (req, res) => {
     book.publishDate = new Date(req.body.publishDate);
     book.pageCount = req.body.pageCount;
     book.description = req.body.description;
+
     if (req.body.cover != null && req.body.cover !== "") {
       saveCover(book, req.body.cover);
     }
+
     await book.save();
+
     res.redirect(`/books/${book.id}`);
   } catch {
     if (book != null) {
